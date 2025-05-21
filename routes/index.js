@@ -1,26 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const usermodel = require("../models/user-model");
-
+const islogedin = require("../middleware/islogedin");
 
 router.get("/", function (req, res) {
   let error = req.flash("error");
+  res.render("index", {error });
 });
 
-
-router.post("/register", async function (req, res) {
-try{
-    let { fullname, email, password } = req.body;
-
-    let user = await usermodel.create({
-        fullname,
-        email,
-        password
-    });
-
-}catch(err){console.log(err.message)}
-    res.render("index"); 
+router.get("/shop",islogedin, function (req, res) {
+  res.render("shop");
 });
-
-
 module.exports = router;
