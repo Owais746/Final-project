@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
+require("dotenv").config();
 
 const ownersRouter = require("./routes/ownersRouter");
 const usersRouter = require("./routes/usersRouter");
@@ -23,7 +24,6 @@ app.use(
     })
 )
 app.use(flash());
-require("dotenv").config();
 
 app.use("/owners", ownersRouter );
 app.use("/users", usersRouter );
