@@ -20,8 +20,7 @@ module.exports.RegisterUser = async function (req, res) {
           });
           let token = generatetoken(user);
           res.cookie('token', token)
-        
-          res.status(200).json({ message: "User Created", data: user });
+
         } catch (err) {
           console.error("Error during registration:", err.message);
           res.status(500).json({ message: "Internal Server Error" });
