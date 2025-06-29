@@ -3,9 +3,8 @@ const mongoose = require('mongoose');
 mongoose.connect("mongodb://127.0.0.1:27017/FinalProject");
 
 const productSchema = mongoose.Schema({
-    image: {
-      type: String,
-      required: true,
+    image:{
+      image:Buffer,     
     },
   name: {
     type: String,
@@ -19,19 +18,8 @@ const productSchema = mongoose.Schema({
     type: String,
   },
   bgcolor:String,
-  paneelcolor:String,
+  panelcolor:String,
   textcolor:String,
 });
 
 module.exports = mongoose.model("product", productSchema);
-
-
-
-
-
-
-
-//   category: {
-//     type: String,
-//     required: true,
-//   },

@@ -2,6 +2,7 @@ const usermodel = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken"); 
 const { generatetoken } = require("../utils/generatetoken");
+const productModel = require("../models/product-model");
 
 module.exports.RegisterUser = async function (req, res) {
         try  {
@@ -20,7 +21,7 @@ module.exports.RegisterUser = async function (req, res) {
           });
           let token = generatetoken(user);
           res.cookie('token', token)
-
+          res.render("shop");
         } catch (err) {
           console.error("Error during registration:", err.message);
           res.status(500).json({ message: "Internal Server Error" });
@@ -29,17 +30,22 @@ module.exports.RegisterUser = async function (req, res) {
 
 module.exports.loginUser = async function (req, res) {
   
-    const { email, password } = req.body;
-    const user = await usermodel.findOne({ email});
-   if(!user) res.send("Invalid Email or Password");
-   
-   bcrypt.compare(password, user.password, function (err, result) {
+  const { email, password } = req.body;
+  const user = await usermodel.findOne({ email});
+  if(!user) res.send("Invalid Email or Password");
+  
+  bcrypt.compare(password, user.password, async function (err, result) {
     if(result){
+      const products = await productModel.find(); 
       let token = generatetoken;
       res.cookie("token",token)
-      res.send("you are logged in")
+      res.render("shop", { products });
+      
     }
-
    })
 
 };
+module.exports.logoutUser = function (req, res) {
+  res.cookie("token" ,"");
+  res.redirect("/");
+}

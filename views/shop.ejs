@@ -26,8 +26,8 @@
                 <% products.forEach(function(product){ %>
                     <div class="w-60">
                         <div class="w-full h-52 flex items-center justify-center bg-[<%= product.bgcolor %>]">
-                            <img class="h-[12rem]" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>"
-                                alt="">
+                            <img class="h-[12rem]"  src="data:image/png;base64,<%- product.image.image.toString('base64') %>" 
+                            alt="<%= product.name %>">
                         </div>
                         <div
                             class="flex justify-between bg-[<%= product.panelcolor %>] items-center px-4 py-4 text-[<%= product.textcolor %>]">
@@ -38,13 +38,13 @@
                                 <h4>₹ <%= product.price %>
                                 </h4>
                             </div>
-                            <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                                <i class="ri-add-line"></i>
+                            <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="/addtocart/<%= product._id %>">
+                                <img src="/images/add-line.png" alt="add to cart" class="w-4 h-4">
                             </a>
                         </div>
                     </div>
                     <% }) %>
-            </div>
+                </div>
         </div>
     </div>
     <%- include('./partials/footer') %>
