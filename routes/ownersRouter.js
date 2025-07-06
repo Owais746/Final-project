@@ -3,9 +3,6 @@ const router = express.Router();
 const ownermodel = require("../models/owner-model");
 const bcrypt = require("bcrypt");
 
-// router.get("/", (req, res) => {
-// res.send("Welcome to the owner route");
-// })
 
 if (process.env.NODE_ENV === "development") {
     router.post("/create", async (req, res) => {
@@ -29,7 +26,22 @@ if (process.env.NODE_ENV === "development") {
     }
    
 router.get("/admin", async (req, res) => {
-    let success = req.flash('success')
-    res.render("createproducts",{success});
+    try {
+        const productModel = require("../models/product-model");
+        const products = await productModel.find().sort({ createdAt: -1 });
+        let success = req.flash('success');
+        let error = req.flash('error');
+        res.render("admin", { products, success, error });
+    } catch (err) {
+        console.error('Admin panel error:', err);
+        req.flash('error', 'Error loading admin panel');
+        res.render("admin", { products: [], success: [], error: req.flash('error') });
+    }
+});
+
+router.get("/create", (req, res) => {
+    let success = req.flash('success');
+    let error = req.flash('error');
+    res.render("createproducts", { success, error });
 });
 module.exports = router;

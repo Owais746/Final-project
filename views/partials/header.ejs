@@ -11,14 +11,18 @@
 
 <body class="font-['helvetica_now_display']">
     <nav class="w-full flex justify-between px-5 py-3">
-        <h3 class="text-xl">Scatch</h3>
+        <h3 class="text-xl">Devaura Hub</h3>
         <% var loggedin = typeof loggedin !== "undefined" ? loggedin : true %>
         <% if (loggedin){ %>
-        <div class="flex gap-5">
-            <a href="">Shop</a>
-            <a href="">Cart</a>
-            <a href="">My account</a>
-            <a class="text-red-600" href="/users/logout">logout</a>
+        <div class="flex gap-5 items-center">
+            <a href="/shop" class="hover:text-blue-600 transition-colors">Shop</a>
+            <a href="/cart" class="hover:text-blue-600 transition-colors flex items-center gap-1">
+                <i class="ri-shopping-cart-line"></i>
+                Cart
+            </a>
+            <a href="/account" class="hover:text-blue-600 transition-colors">My Account</a>
+            <a href="/orders" class="hover:text-blue-600 transition-colors">My Orders</a>
+            <a class="text-red-600 hover:text-red-700 transition-colors" href="/logout">Logout</a>
         </div>
         <%}%>
     </nav>

@@ -1,46 +1,165 @@
 <%- include('./partials/header') %>
-    <div class="w-full h-screen flex items-start px-20 py-20 gap-10">
-        <div class="w-[30%] rounded-md overflow-hidden">
-            <div class="w-full h-80 bg-yellow-500"></div>
-            <div class="w-full flex justify-between px-5 py-4">
-                <h3 class="text-2xl">Clinge Bag</h3>
-                <div class="flex items-center gap-2">
-                    <i class="w-7 h-7 bg-white flex rounded-full items-center justify-center ri-add-line"></i>
-                    <div class="px-2 py-1 rounded-md bg-white text-black">01</div>
-                    <i class="w-7 h-7 bg-white flex rounded-full items-center justify-center ri-subtract-line"></i>
-                </div>
-            </div>
-            <div class="flex items-center justify-between px-5 py-3">
-                <h4 class="text-lg">Net Total</h4>
-                <h2 class="text-lg">₹ 1200</h2>
-            </div>
-        </div>
-        <div class="w-[70%]">
-            <h3 class="text-xl">Price Breakdown</h3>
-            <div class="px-10 mt-5">
-                <div class="flex mt-2">
-                    <h4 class="w-1/3">Total MRP</h4>
-                    <h4>₹ 1920</h4>
-                </div>
-                <div class="flex mt-2">
-                    <h4 class="w-1/3">Discount on MRP</h4>
-                    <h4>₹ 0</h4>
-                </div>
-                <div class="flex mt-2">
-                    <h4 class="w-1/3">Platform Fee</h4>
-                    <h4>₹ 20</h4>
-                </div>
-                <div class="flex mt-2">
-                    <h4 class="w-1/3">Shipping Fee</h4>
-                    <h4>FREE</h4>
-                </div>
-            </div>
-            <div class="w-full h-[1px] bg-black mt-10"></div>
-            <div class="flex mt-5">
-                <h3 class="w-1/3 text-xl">Total Amount</h3>
-                <h3 class="font-semibold text-xl text-green-600">₹ 1940</h3>
-            </div>
-            <form action=""></form>
-        </div>
+
+<!-- Flash Messages -->
+<% if (success && success.length > 0) { %>
+    <div class="w-full bg-green-500 text-white text-center py-2">
+        <%= success %>
     </div>
-    <%- include('./partials/footer') %>
+<% } %>
+<% if (error && error.length > 0) { %>
+    <div class="w-full bg-red-500 text-white text-center py-2">
+        <%= error %>
+    </div>
+<% } %>
+
+<div class="w-full min-h-screen flex items-start px-20 py-20 gap-10">
+    <% if (cartItems && cartItems.length > 0) { %>
+        <!-- Cart Items Section -->
+        <div class="w-[60%] space-y-4">
+            <h2 class="text-2xl font-bold mb-6">Your Cart (<%= cartItems.length %> items)</h2>
+            
+            <% cartItems.forEach(function(item, index) { %>
+                <% if (item && item._id) { %>
+                <div class="w-full border rounded-md overflow-hidden shadow-sm flex">
+                    <div class="w-32 h-32 bg-<%= item.bgcolor || 'gray-200' %> flex items-center justify-center flex-shrink-0">
+                        <% if (item.image && item.image.image) { %>
+                            <img src="data:image/jpeg;base64,<%= item.image.image.toString('base64') %>" alt="<%= item.name %>" class="w-full h-full object-cover rounded-md">
+                        <% } else { %>
+                            <span class="text-2xl text-white font-bold"><%= item.name.charAt(0) %></span>
+                        <% } %>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-between px-5 py-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2"><%= item.name %></h3>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-lg font-bold text-gray-900">₹ <%= item.price %></span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm text-gray-600">Quantity:</span>
+                                <div class="flex items-center border rounded-lg">
+                                    <button onclick="updateQuantity('<%= item._id %>', 'decrease')" class="px-3 py-1 hover:bg-gray-100 transition-colors">-</button>
+                                    <span class="px-3 py-1 border-x" id="quantity-<%= item._id %>"><%= item.quantity || 1 %></span>
+                                    <button onclick="updateQuantity('<%= item._id %>', 'increase')" class="px-3 py-1 hover:bg-gray-100 transition-colors">+</button>
+                                </div>
+                            </div>
+                            <a href="/removefromcart/<%= item._id %>" class="w-10 h-10 bg-red-500 text-white flex rounded-full items-center justify-center hover:bg-red-600 transition-colors" title="Remove from cart">
+                                <i class="ri-delete-bin-line text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            <% }) %>
+        </div>
+
+        <!-- Price Breakdown Section -->
+        <div class="w-[40%] sticky top-20">
+            <div class="border rounded-lg p-6 bg-white shadow-sm">
+                <h3 class="text-xl font-bold mb-4">Price Breakdown</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <h4 class="text-gray-600">Total MRP</h4>
+                        <h4>₹ <%= totalMRP %></h4>
+                    </div>
+                    <div class="flex justify-between">
+                        <h4 class="text-gray-600">Platform Fee</h4>
+                        <h4>₹ <%= platformFee %></h4>
+                    </div>
+                    <div class="flex justify-between">
+                        <h4 class="text-gray-600">Shipping Fee</h4>
+                        <h4 class="text-green-600"><%= shippingFee === 0 ? 'FREE' : '₹ ' + shippingFee %></h4>
+                    </div>
+                </div>
+                
+                <div class="w-full h-[1px] bg-gray-300 my-4"></div>
+                
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Total Amount</h3>
+                    <h3 class="font-bold text-xl text-green-600">₹ <%= finalTotal %></h3>
+                </div>
+                
+                <div class="space-y-3">
+                    <a href="/checkout" class="block w-full text-center bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        Proceed to Checkout
+                    </a>
+                    <a href="/shop" class="block w-full text-center bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+        <!-- Empty Cart -->
+        <div class="w-full flex flex-col items-center justify-center py-20">
+            <div class="text-center">
+                <i class="ri-shopping-cart-line text-6xl text-gray-400 mb-4"></i>
+                <h2 class="text-2xl font-bold text-gray-600 mb-2">Your cart is empty</h2>
+                <p class="text-gray-500 mb-6">Looks like you haven't added any items to your cart yet.</p>
+                <a href="/shop" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    Start Shopping
+                </a>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<script>
+function updateQuantity(productId, action) {
+    // Disable buttons temporarily to prevent multiple clicks
+    const increaseBtn = document.querySelector(`button[onclick="updateQuantity('${productId}', 'increase')"]`);
+    const decreaseBtn = document.querySelector(`button[onclick="updateQuantity('${productId}', 'decrease')"]`);
+    
+    if (increaseBtn) increaseBtn.disabled = true;
+    if (decreaseBtn) decreaseBtn.disabled = true;
+    
+    fetch(`/updatequantity/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: action })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            if (data.quantity === 0) {
+                // Reload page if item was removed
+                location.reload();
+            } else {
+                // Update the quantity display
+                const quantityElement = document.getElementById(`quantity-${productId}`);
+                if (quantityElement) {
+                    quantityElement.textContent = data.quantity;
+                    console.log(`Updated quantity for ${productId} to ${data.quantity}`);
+                } else {
+                    console.error(`Quantity element not found for product ${productId}`);
+                    location.reload(); // Fallback to page reload
+                }
+            }
+        } else {
+            alert('Error updating quantity: ' + (data.error || 'Unknown error'));
+            console.error('Server error:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        alert('Error updating quantity. Please try again.');
+        // Reload page as fallback
+        location.reload();
+    })
+    .finally(() => {
+        // Re-enable buttons
+        if (increaseBtn) increaseBtn.disabled = false;
+        if (decreaseBtn) decreaseBtn.disabled = false;
+    });
+}
+</script>
+
+<%- include('./partials/footer') %>

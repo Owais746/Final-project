@@ -1,0 +1,142 @@
+<%- include('./partials/header') %>
+
+<!-- Flash Messages -->
+<% if (success && success.length > 0) { %>
+    <div class="w-full bg-green-500 text-white text-center py-2">
+        <%= success %>
+    </div>
+<% } %>
+<% if (error && error.length > 0) { %>
+    <div class="w-full bg-red-500 text-white text-center py-2">
+        <%= error %>
+    </div>
+<% } %>
+
+<div class="w-full min-h-screen flex items-start px-20 py-20 gap-10">
+    <!-- Order Summary Section -->
+    <div class="w-[60%] space-y-6">
+        <h2 class="text-3xl font-bold mb-6">Checkout</h2>
+        
+        <!-- Shipping Information -->
+        <div class="border rounded-lg p-6 bg-white shadow-sm">
+            <h3 class="text-xl font-bold mb-4">Shipping Information</h3>
+            <form action="/placeorder" method="POST">
+                <div class="space-y-4">
+                    <div>
+                        <label for="fullname" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" value="<%= user.fullname %>" readonly
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" name="email" value="<%= user.email %>" readonly
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
+                    </div>
+                    
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Enter your phone number">
+                    </div>
+                    
+                    <div>
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Shipping Address *</label>
+                        <textarea id="address" name="address" rows="4" required
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="Enter your complete address including street, city, state, and postal code"></textarea>
+                    </div>
+                </div>
+        </div>
+        
+        <!-- Order Items -->
+        <div class="border rounded-lg p-6 bg-white shadow-sm">
+            <h3 class="text-xl font-bold mb-4">Order Items (<%= cartItems.length %> items)</h3>
+            <div class="space-y-4">
+                <% cartItems.forEach(function(item) { %>
+                    <div class="flex items-center gap-4 py-3 border-b last:border-b-0">
+                        <div class="w-16 h-16 bg-<%= item.bgcolor || 'gray-200' %> flex items-center justify-center rounded-lg flex-shrink-0">
+                            <% if (item.image && item.image.image) { %>
+                                <img src="data:image/jpeg;base64,<%= item.image.image.toString('base64') %>" 
+                                     alt="<%= item.name %>" class="w-full h-full object-cover rounded-lg">
+                            <% } else { %>
+                                <span class="text-sm text-white font-bold"><%= item.name.charAt(0) %></span>
+                            <% } %>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800"><%= item.name %></h4>
+                            <p class="text-sm text-gray-600">Quantity: <%= item.quantity %></p>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium text-gray-900">₹<%= item.price %></span>
+                                <% if (item.discount) { %>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                        <%= item.discount %>% OFF
+                                    </span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <% let itemTotal = item.price * item.quantity %>
+                            <% if (item.discount) { itemTotal -= (itemTotal * parseFloat(item.discount)) / 100; } %>
+                            <span class="font-bold text-gray-900">₹<%= Math.round(itemTotal) %></span>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Price Summary Section -->
+    <div class="w-[40%] sticky top-20">
+        <div class="border rounded-lg p-6 bg-white shadow-sm">
+            <h3 class="text-xl font-bold mb-4">Order Summary</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total MRP</span>
+                    <span>₹<%= totalMRP %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Discount on MRP</span>
+                    <span class="text-green-600">-₹<%= totalDiscount %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Platform Fee</span>
+                    <span>₹<%= platformFee %></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Shipping Fee</span>
+                    <span class="text-green-600"><%= shippingFee === 0 ? 'FREE' : '₹' + shippingFee %></span>
+                </div>
+            </div>
+            
+            <div class="w-full h-[1px] bg-gray-300 my-4"></div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">Total Amount</h3>
+                <h3 class="font-bold text-xl text-green-600">₹<%= finalTotal %></h3>
+            </div>
+            
+            <div class="space-y-3">
+                <button type="submit" 
+                        class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                    Place Order
+                </button>
+                </form>
+                <a href="/cart" 
+                   class="block w-full text-center bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                    Back to Cart
+                </a>
+            </div>
+            
+            <!-- Payment Info -->
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <h4 class="font-semibold text-blue-800 mb-2">Payment Method</h4>
+                <p class="text-sm text-blue-700">Cash on Delivery (COD)</p>
+                <p class="text-xs text-blue-600 mt-1">Pay when your order is delivered to your doorstep.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>
