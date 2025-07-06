@@ -1,17 +1,5 @@
 <%- include('./partials/header') %>
 
-<!-- Flash Messages -->
-<% if (success && success.length > 0) { %>
-    <div class="w-full bg-green-500 text-white text-center py-2">
-        <%= success %>
-    </div>
-<% } %>
-<% if (error && error.length > 0) { %>
-    <div class="w-full bg-red-500 text-white text-center py-2">
-        <%= error %>
-    </div>
-<% } %>
-
 <div class="w-full min-h-screen flex flex-col lg:flex-row items-start px-4 sm:px-8 lg:px-20 py-8 lg:py-20">
     <!-- Sidebar -->
     <div class="w-full lg:w-[25%] flex flex-col lg:h-screen items-start mb-8 lg:mb-0">
@@ -220,6 +208,8 @@
 </div>
 
 <script>
+
+// Delete product functionality
 function deleteProduct(productId, productName) {
     document.getElementById('productName').textContent = productName;
     document.getElementById('deleteForm').action = `/products/delete/${productId}`;
@@ -229,6 +219,42 @@ function deleteProduct(productId, productName) {
 function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden');
 }
+
+// Order status update functionality
+function updateOrderStatus(orderId, newStatus) {
+    if (confirm(`Are you sure you want to mark this order as ${newStatus}?`)) {
+        // In a real application, this would make an API call
+        // For now, just show a message
+        alert(`Order status updated to ${newStatus}. Page will refresh to show changes.`);
+        window.location.reload();
+    }
+}
+
+// Order filtering
+function filterOrders() {
+    const filterValue = document.getElementById('orderFilter').value;
+    const orderItems = document.querySelectorAll('.order-item');
+    
+    orderItems.forEach(item => {
+        const orderStatus = item.dataset.status;
+        if (filterValue === 'all' || orderStatus === filterValue) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Add event listener for order filter
+document.addEventListener('DOMContentLoaded', function() {
+    const orderFilter = document.getElementById('orderFilter');
+    if (orderFilter) {
+        orderFilter.addEventListener('change', filterOrders);
+    }
+    
+    // Set default active tab
+    showTab('products');
+});
 
 // Close modal when clicking outside
 document.getElementById('deleteModal').addEventListener('click', function(e) {

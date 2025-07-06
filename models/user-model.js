@@ -25,7 +25,8 @@ const userSchema = mongoose.Schema({
     default: []
   },
   contact: {
-    type: Number,
+    type: String,
+    trim: true
   },
   picture: {
     type: String

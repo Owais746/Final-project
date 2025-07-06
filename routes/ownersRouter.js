@@ -29,13 +29,10 @@ router.get("/admin", async (req, res) => {
     try {
         const productModel = require("../models/product-model");
         const products = await productModel.find().sort({ createdAt: -1 });
-        let success = req.flash('success');
-        let error = req.flash('error');
-        res.render("admin", { products, success, error });
+        res.render("admin", { products, orders: [], totalOrders: 0 });
     } catch (err) {
         console.error('Admin panel error:', err);
-        req.flash('error', 'Error loading admin panel');
-        res.render("admin", { products: [], success: [], error: req.flash('error') });
+        res.render("admin", { products: [], orders: [], totalOrders: 0 });
     }
 });
 

@@ -286,6 +286,307 @@
     }
 }
 
+/* Manual Dark Theme Styles */
+.dark {
+    background-color: #111827 !important;
+    color: #f9fafb !important;
+}
+
+.dark,
+.dark body {
+    background-color: #111827 !important;
+    color: #f9fafb !important;
+}
+
+.dark nav {
+    background-color: #1f2937 !important;
+    color: #f9fafb !important;
+}
+
+.dark .bg-white {
+    background-color: #1f2937 !important;
+    color: #f9fafb !important;
+}
+
+.dark .bg-zinc-100 {
+    background-color: #374151 !important;
+    color: #f9fafb !important;
+    border-color: #4b5563 !important;
+}
+
+.dark .bg-gray-50 {
+    background-color: #374151 !important;
+    color: #f9fafb !important;
+}
+
+.dark .bg-gray-100 {
+    background-color: #4b5563 !important;
+    color: #f9fafb !important;
+}
+
+.dark .bg-gray-200 {
+    background-color: #6b7280 !important;
+    color: #f9fafb !important;
+}
+
+.dark .border,
+.dark .border-zinc-200,
+.dark .border-gray-300 {
+    border-color: #4b5563 !important;
+}
+
+.dark .text-gray-600 {
+    color: #d1d5db !important;
+}
+
+.dark .text-gray-700 {
+    color: #e5e7eb !important;
+}
+
+.dark .text-gray-800 {
+    color: #f3f4f6 !important;
+}
+
+.dark .text-gray-900 {
+    color: #f9fafb !important;
+}
+
+.dark .text-black {
+    color: #f9fafb !important;
+}
+
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="tel"],
+.dark select,
+.dark textarea {
+    background-color: #374151 !important;
+    color: #f9fafb !important;
+    border-color: #4b5563 !important;
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="password"]:focus,
+.dark input[type="tel"]:focus,
+.dark select:focus,
+.dark textarea:focus {
+    background-color: #4b5563 !important;
+    border-color: #6b7280 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.dark button:not(.bg-blue-500):not(.bg-blue-600):not(.bg-red-500):not(.bg-green-500):not(.bg-green-600),
+.dark .btn:not(.bg-blue-500):not(.bg-blue-600):not(.bg-red-500):not(.bg-green-500):not(.bg-green-600) {
+    background-color: #374151 !important;
+    color: #f9fafb !important;
+    border-color: #4b5563 !important;
+}
+
+.dark .bg-blue-50 {
+    background-color: #1e3a8a !important;
+    color: #e0f2fe !important;
+}
+
+.dark .text-blue-800 {
+    color: #93c5fd !important;
+}
+
+.dark .text-blue-700 {
+    color: #bfdbfe !important;
+}
+
+.dark .text-blue-600 {
+    color: #dbeafe !important;
+}
+
+.dark .text-green-600 {
+    color: #86efac !important;
+}
+
+.dark .text-red-600 {
+    color: #fca5a5 !important;
+}
+
+.dark .shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .flash-message {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+.dark .flash-message.success {
+    background: linear-gradient(135deg, #065f46, #047857) !important;
+}
+
+.dark .flash-message.error {
+    background: linear-gradient(135deg, #991b1b, #b91c1c) !important;
+}
+
+.dark .flash-message.info {
+    background: linear-gradient(135deg, #1e3a8a, #1d4ed8) !important;
+}
+
+.dark .product-card {
+    border-color: #4b5563 !important;
+    background-color: #1f2937 !important;
+}
+
+.dark .cart-item {
+    border-color: #4b5563 !important;
+    background-color: #1f2937 !important;
+}
+
+/* Hover Effects */
+.hover-scale:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* Product card hover effects */
+.product-card {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.dark .product-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Button hover effects */
+button:not(#dark-mode-toggle):hover,
+.btn:hover,
+input[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.dark button:not(#dark-mode-toggle):hover,
+.dark .btn:hover,
+.dark input[type="submit"]:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Link hover effects */
+a:hover {
+    color: #3b82f6 !important;
+    transition: color 0.3s ease;
+}
+
+.dark a:hover {
+    color: #60a5fa !important;
+}
+
+/* Navigation link hover effects */
+nav a:hover {
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
+
+/* Flash message hover effects */
+.flash-message:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+/* Input hover effects */
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="tel"]:hover,
+select:hover,
+textarea:hover {
+    border-color: #3b82f6;
+    transition: border-color 0.3s ease;
+}
+
+.dark input[type="text"]:hover,
+.dark input[type="email"]:hover,
+.dark input[type="password"]:hover,
+.dark input[type="tel"]:hover,
+.dark select:hover,
+.dark textarea:hover {
+    border-color: #60a5fa;
+}
+
+/* Cart and action button hover effects */
+.cart-remove-btn:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+.quantity-btn:hover {
+    background-color: #e5e7eb;
+    transition: background-color 0.2s ease;
+}
+
+.dark .quantity-btn:hover {
+    background-color: #4b5563;
+}
+
+/* Dark mode toggle hover effects */
+#dark-mode-toggle {
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+}
+
+#dark-mode-toggle:hover {
+    background-color: #f3f4f6;
+    transform: rotate(180deg);
+    border-color: #3b82f6;
+}
+
+.dark #dark-mode-toggle {
+    border-color: #4b5563;
+}
+
+.dark #dark-mode-toggle:hover {
+    background-color: #374151;
+    border-color: #60a5fa;
+}
+
+/* Hover effects for interactive elements */
+.interactive:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+/* Card container hover effects */
+.mobile-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.dark .mobile-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
 /* Print styles */
 @media print {
     .no-print {

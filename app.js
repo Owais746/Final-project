@@ -1,7 +1,7 @@
 const express = require("express");
+require("dotenv").config(); // Load environment variables first
 const app = express();
 app.use(express.json());
-require("dotenv").config();
 
 const ownersRouter = require("./routes/ownersRouter");
 const usersRouter = require("./routes/usersRouter");

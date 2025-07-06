@@ -1,17 +1,5 @@
 <%- include('./partials/header') %>
 
-<!-- Flash Messages -->
-<% if (success && success.length > 0) { %>
-    <div class="w-full bg-green-500 text-white text-center py-2">
-        <%= success %>
-    </div>
-<% } %>
-<% if (error && error.length > 0) { %>
-    <div class="w-full bg-red-500 text-white text-center py-2">
-        <%= error %>
-    </div>
-<% } %>
-
 <div class="w-full min-h-screen px-5 md:px-20 py-10 md:py-20">
     <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">Your Orders</h2>
@@ -29,6 +17,7 @@
                                 <span class="inline-block px-3 py-1 rounded-full text-sm font-medium 
                                     <%= order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
                                         order.status === 'delivered' ? 'bg-green-100 text-green-800' : 
+                                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
                                         'bg-blue-100 text-blue-800' %>">
                                     <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
                                 </span>
@@ -74,15 +63,11 @@
                         <div class="border-t pt-4 mt-4">
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <% if (order.status === 'pending') { %>
-                                    <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                    <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
                                             onclick="cancelOrder(<%= index %>)">
                                         Cancel Order
                                     </button>
                                 <% } %>
-                                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                                        onclick="trackOrder(<%= index %>)">
-                                    Track Order
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -114,17 +99,52 @@
 </div>
 
 <script>
-function cancelOrder(orderIndex) {
-    if (confirm('Are you sure you want to cancel this order?')) {
-        // In a real application, you would send a request to cancel the order
-        alert('Order cancellation requested. You will receive a confirmation shortly.');
+function showSuccessMessage(message) {
+    if (window.flashMessage) {
+        window.flashMessage.success(message);
+    } else {
+        alert(message);
     }
 }
 
-function trackOrder(orderIndex) {
-    // In a real application, this would show detailed tracking information
-    alert('Order tracking: Your order is being processed and will be shipped soon.');
+function showErrorMessage(message) {
+    if (window.flashMessage) {
+        window.flashMessage.error(message);
+    } else {
+        alert(message);
+    }
 }
+
+function cancelOrder(orderIndex) {
+    if (confirm('Are you sure you want to cancel this order?')) {
+        fetch(`/cancelorder/${orderIndex}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showSuccessMessage('Order cancelled successfully!');
+                // Reload page after a short delay to show updated status
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showErrorMessage('Error: ' + (data.error || 'Unable to cancel order'));
+            }
+        })
+        .catch(error => {
+            console.error('Cancel order error:', error);
+            showErrorMessage('Error cancelling order. Please try again.');
+        });
+    }
+}
+
 </script>
 
 <%- include('./partials/footer') %>

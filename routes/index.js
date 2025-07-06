@@ -192,16 +192,46 @@ router.get("/removefromcart/:productid", isloggedin, async function (req, res) {
       return res.redirect("/cart");
     }
 
-    // Remove the product from cart
-    user.cart = user.cart.filter(item => {
-      if (item.product) {
-        return item.product.toString() !== req.params.productid;
+    console.log('Before removal - Cart length:', user.cart.length);
+    console.log('Product ID to remove:', req.params.productid);
+    
+    // Check if product exists in cart
+    const originalCartLength = user.cart.length;
+    
+    // Remove the product from cart - handle both old and new formats
+    const filteredCart = user.cart.filter(item => {
+      let itemProductId;
+      
+      if (item && typeof item === 'object' && item.product) {
+        // New format: {product: ObjectId, quantity: Number}
+        itemProductId = item.product.toString();
+      } else if (item) {
+        // Old format: direct ObjectId reference
+        itemProductId = item.toString();
+      } else {
+        return false; // Remove invalid items
       }
-      return item.toString() !== req.params.productid;
+      
+      const shouldKeep = itemProductId !== req.params.productid;
+      console.log(`Item ${itemProductId} should keep: ${shouldKeep}`);
+      return shouldKeep;
     });
+    
+    user.cart = filteredCart;
+    
+    // Mark cart as modified for mixed arrays
+    user.markModified('cart');
     await user.save();
     
-    req.flash("success", "Item removed from cart successfully");
+    console.log('After removal - Cart length:', user.cart.length);
+    
+    if (user.cart.length < originalCartLength) {
+      req.flash("success", "Item removed from cart successfully");
+    } else {
+      req.flash("error", "Item not found in cart");
+    }
+    
+    // Clear any existing flash messages first, then redirect
     res.redirect("/cart");
   } catch (err) {
     console.error('Remove from cart error:', err);
@@ -494,6 +524,44 @@ router.get("/logout", isloggedin, function (req, res) {
   res.cookie("token", "");
   req.flash("success", "You have been logged out successfully!");
   res.redirect("/");
+});
+
+// Clear flash messages endpoint
+router.post("/clearflash", function (req, res) {
+  // Clear any remaining flash messages
+  req.flash('success');
+  req.flash('error');
+  res.json({ success: true });
+});
+
+// Cancel order
+router.post("/cancelorder/:orderindex", isloggedin, async function (req, res) {
+  try {
+    let user = await userModel.findOne({ email: req.user.email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const orderIndex = parseInt(req.params.orderindex);
+    if (orderIndex < 0 || orderIndex >= user.orders.length) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    const order = user.orders[orderIndex];
+    if (order.status !== 'pending') {
+      return res.status(400).json({ error: "Only pending orders can be cancelled" });
+    }
+
+    // Update order status to cancelled
+    order.status = 'cancelled';
+    order.cancelledDate = new Date();
+    
+    await user.save();
+    res.json({ success: true, message: "Order cancelled successfully" });
+  } catch (err) {
+    console.error('Cancel order error:', err);
+    res.status(500).json({ error: "Something went wrong while cancelling order" });
+  }
 });
 
 module.exports = router;

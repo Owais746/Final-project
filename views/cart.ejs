@@ -1,16 +1,5 @@
 <%- include('./partials/header') %>
 
-<!-- Flash Messages -->
-<% if (success && success.length > 0) { %>
-    <div class="w-full bg-green-500 text-white text-center py-2">
-        <%= success %>
-    </div>
-<% } %>
-<% if (error && error.length > 0) { %>
-    <div class="w-full bg-red-500 text-white text-center py-2">
-        <%= error %>
-    </div>
-<% } %>
 
 <div class="w-full min-h-screen flex flex-col md:flex-row items-start px-5 md:px-20 py-10 md:py-20 gap-5 md:gap-10">
     <% if (cartItems && cartItems.length > 0) { %>
@@ -106,6 +95,22 @@
 </div>
 
 <script>
+function showSuccessMessage(message) {
+    if (window.flashMessage) {
+        window.flashMessage.success(message);
+    } else {
+        alert(message);
+    }
+}
+
+function showErrorMessage(message) {
+    if (window.flashMessage) {
+        window.flashMessage.error(message);
+    } else {
+        alert(message);
+    }
+}
+
 function updateQuantity(productId, action) {
     // Disable buttons temporarily to prevent multiple clicks
     const increaseBtn = document.querySelector(`button[onclick="updateQuantity('${productId}', 'increase')"]`);
@@ -128,23 +133,36 @@ function updateQuantity(productId, action) {
         return response.json();
     })
     .then(data => {
+        console.log('Server response:', data); // Debug log
         if (data.success) {
             if (data.quantity === 0) {
-                // Reload page if item was removed
-                location.reload();
+                // Show success message and reload page if item was removed
+                showSuccessMessage('Item removed from cart');
+                setTimeout(() => location.reload(), 1000);
             } else {
                 // Update the quantity display
                 const quantityElement = document.getElementById(`quantity-${productId}`);
                 if (quantityElement) {
                     quantityElement.textContent = data.quantity;
                     console.log(`Updated quantity for ${productId} to ${data.quantity}`);
+                    
+                    // Also update the total if provided
+                    if (data.newTotal) {
+                        const totalElements = document.querySelectorAll('.final-total');
+                        totalElements.forEach(el => {
+                            el.textContent = '₹ ' + data.newTotal;
+                        });
+                    }
+                    
+                    // Show brief success message
+                    showSuccessMessage('Cart updated');
                 } else {
                     console.error(`Quantity element not found for product ${productId}`);
                     location.reload(); // Fallback to page reload
                 }
             }
         } else {
-            alert('Error updating quantity: ' + (data.error || 'Unknown error'));
+            showErrorMessage('Error: ' + (data.error || 'Unable to update quantity'));
             console.error('Server error:', data.error);
         }
     })

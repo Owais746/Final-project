@@ -1,16 +1,5 @@
 <%- include('./partials/header') %>
 
-<!-- Flash Messages -->
-<% if (success && success.length > 0) { %>
-    <div class="w-full bg-green-500 text-white text-center py-2">
-        <%= success %>
-    </div>
-<% } %>
-<% if (error && error.length > 0) { %>
-    <div class="w-full bg-red-500 text-white text-center py-2">
-        <%= error %>
-    </div>
-<% } %>
 
 <div class="w-full min-h-screen px-5 md:px-20 py-10 md:py-20">
     <div class="flex flex-col lg:flex-row gap-8">
@@ -44,9 +33,15 @@
                     
                     <div>
                         <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Shipping Address *</label>
-                        <textarea id="address" name="address" rows="4" required
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                  placeholder="Enter your complete address including street, city, state, and postal code"></textarea>
+                        <textarea id="address" name="address" rows="5" required
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                  placeholder="House No./Flat No./Building Name&#10;Street/Road/Area/Locality&#10;City, State&#10;PIN Code&#10;Landmark (Optional)">
+                        </textarea>
+                        <p class="text-xs text-gray-500 mt-1">Please provide your complete delivery address including PIN code for successful delivery</p>
+                        <div id="address-preview" class="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-700 hidden">
+                            <strong>Address Preview:</strong>
+                            <div id="address-content"></div>
+                        </div>
                     </div>
                 </div>
         </div>
@@ -141,5 +136,80 @@
         </div>
     </div>
 </div>
+
+<script>
+// Address preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const addressTextarea = document.getElementById('address');
+    const addressPreview = document.getElementById('address-preview');
+    const addressContent = document.getElementById('address-content');
+    
+    if (addressTextarea) {
+        addressTextarea.addEventListener('input', function() {
+            const addressValue = this.value.trim();
+            if (addressValue.length > 10) {
+                // Show preview if address has substantial content
+                addressPreview.classList.remove('hidden');
+                addressContent.innerHTML = addressValue.replace(/\n/g, '<br>');
+            } else {
+                // Hide preview if address is too short
+                addressPreview.classList.add('hidden');
+            }
+        });
+        
+        // Validate address on form submission
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const addressValue = addressTextarea.value.trim();
+                if (addressValue.length < 20) {
+                    e.preventDefault();
+                    showErrorMessage('Please provide a complete address with at least 20 characters including PIN code');
+                    addressTextarea.focus();
+                    return false;
+                }
+                
+                // Check if PIN code pattern exists (basic validation)
+                const pinCodePattern = /\d{6}/;
+                if (!pinCodePattern.test(addressValue)) {
+                    e.preventDefault();
+                    showErrorMessage('Please include a valid 6-digit PIN code in your address');
+                    addressTextarea.focus();
+                    return false;
+                }
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Placing Order...';
+                }
+            });
+        }
+    }
+    
+    // Phone number validation
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            // Remove any non-digit characters
+            this.value = this.value.replace(/\D/g, '');
+            
+            // Limit to 10 digits
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
+        
+        phoneInput.addEventListener('blur', function() {
+            if (this.value.length !== 10) {
+                this.setCustomValidity('Please enter a valid 10-digit phone number');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+});
+</script>
 
 <%- include('./partials/footer') %>
