@@ -1,26 +1,54 @@
 <%- include('./partials/header') %>
 <div class="w-full min-h-screen flex flex-col md:flex-row items-start px-5 md:px-20 py-10 md:py-20">
-    <div class="w-full md:w-[25%] flex flex-col items-start mb-10 md:mb-0">
-            <div class="flex items-center gap-2">
-                <h3>sort by</h3>
-                <form action="/shop">
-                    <select class="border-[1px] px-2 py-1" name="sortby" id="">
-                        <option value="popular">Popular</option>
-                        <option value="newest">Newest</option>
-                    </select>
-                </form>
-            </div>
-            <div class="flex flex-col mt-20">
-                <a class="block w-fit mb-2" href="">New Collection</a>
-                <a class="block w-fit mb-2" href="">All Products</a>
-                <a class="block w-fit mb-2" href="">Discounted Products</a>
-            </div>
-            <div class="mt-32">
-                <a class="block w-fit mb-2" href="">Filter by :</a>
-                <a class="block w-fit mb-2" href="">Availability</a>
-                <a class="block w-fit mb-2" href="">Discount</a>
+<div class="w-full md:w-[25%] flex flex-col items-start mb-10 md:mb-0">
+<div class="w-full bg-#FFFFF0 from-blue-100 to-blue-300 shadow-md border border-blue-200 rounded-xl p-6 mb-6">
+    <div class="flex items-center mb-4">
+        <i class="ri-filter-3-line  text-2xl text-blue-600 mr-3"></i>
+        <h3 class="text-lg font-bold text-gray-800">Category</h3>
+    </div>
+    <div>
+        <label for="categoryFilter" class="block mb-3 font-semibold text-gray-700 flex items-center">
+            <i class="ri-price-tag-3-line mr-2 text-blue-500"></i>
+            Choose Category
+        </label>
+        <div class="relative">
+            <select id="categoryFilter" name="category" class="w-full bg-#FFFFF0 border-2 border-blue-300 rounded-lg p-3 text-gray-700 font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 appearance-none cursor-pointer hover:border-blue-400">
+                <option value="" class="bg-blue-50">🏷️ Select Category</option>
+                <option value="Electronics" class="bg-blue-50">📱 Electronics</option>
+                <option value="Clothing" class="bg-blue-50">👕 Clothing</option>
+                <option value="Books" class="bg-blue-50">📚 Books</option>
+                <option value="Home & Garden" class="bg-blue-50">🏠 Home & Garden</option>
+                <option value="Sports" class="bg-blue-50">⚽ Sports</option>
+                <option value="Toys" class="bg-blue-50">🧸 Toys</option>
+                <option value="Beauty" class="bg-blue-50">💄 Beauty</option>
+                <option value="Automotive" class="bg-blue-50">🚗 Automotive</option>
+                <option value="Food" class="bg-blue-50">🍕 Food</option>
+                <option value="Other" class="bg-blue-50">📦 Other</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <i class="ri-arrow-down-s-line text-blue-500"></i>
             </div>
         </div>
+    </div>
+</div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var select = document.getElementById("categoryFilter");
+        select.addEventListener("change", function () {
+            const selectedCategory = this.value.toLowerCase();
+            const cards = document.querySelectorAll(".product-card");
+            cards.forEach(function (card) {
+                const categoryText = (card.querySelector("p")?.innerText ?? '').toLowerCase();
+                if (!selectedCategory || categoryText.indexOf(selectedCategory) !== -1) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
+    </script>
+</div>
 <div class="w-full md:w-[75%] flex flex-col gap-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 <% products.forEach(function(product){ %>

@@ -8,12 +8,28 @@
             
             <!-- Navigation Tabs -->
             <div class="flex flex-col space-y-2">
-                <button onclick="showTab('products')" id="productsTab" class="tab-button active text-left p-2 rounded hover:bg-blue-100">📦 All Products</button>
-                <button onclick="showTab('orders')" id="ordersTab" class="tab-button text-left p-2 rounded hover:bg-blue-100">📋 Orders</button>
+                <button type="button" onclick="showTab('products')" id="productsTab" class="tab-button active text-left p-2 rounded hover:bg-blue-100">📦 All Products</button>
+                <button type="button" onclick="showTab('orders')" id="ordersTab" class="tab-button text-left p-2 rounded hover:bg-blue-100">📋 Orders</button>
                 <a class="block p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded" href="/owners/create">➕ Create New Product</a>
             </div>
+<script>
+function showTab(tab) {
+    // Hide all tab-contents
+    document.querySelectorAll('.tab-content').forEach(el => { el.classList.add('hidden') });
+    // Remove 'active' class from all tab-buttons
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    // Show correct tab and mark button active
+    if(tab=='products') {
+      document.getElementById('productsContent').classList.remove('hidden');
+      document.getElementById('productsTab').classList.add('active');
+    } else {
+      document.getElementById('ordersContent').classList.remove('hidden');
+      document.getElementById('ordersTab').classList.add('active');
+    }
+}
+</script>
             
-            <div class="mt-4 p-3 bg-gray-100 rounded">
+<div class="mt-4 p-3 bg-blue-50 rounded">
                 <p class="text-sm text-gray-600">Total Products: <span class="font-bold"><%= products.length %></span></p>
                 <p class="text-sm text-gray-600">Total Orders: <span class="font-bold"><%= totalOrders || 0 %></span></p>
             </div>
@@ -37,19 +53,19 @@
                     <% products.forEach(function(product) { %>
                         <div class="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                             <!-- Product Image -->
-                            <div class="w-full h-40 sm:h-48 bg-<%= product.bgcolor || 'gray-200' %> flex items-center justify-center">
+                            <div class="w-full h-40 sm:h-48 flex items-center justify-center bg-gray-200 dark:bg-#FFFFF0">
                                 <% if (product.image && product.image.image) { %>
                                     <img src="data:image/png;base64,<%= product.image.image.toString('base64') %>" 
                                          alt="<%= product.name %>" 
                                          class="w-full h-full object-contain">
                                 <% } else { %>
-                                    <span class="text-2xl sm:text-4xl text-gray-500"><%= product.name.charAt(0) %></span>
+                                    <span class="text-2xl sm:text-4xl text-gray-500 dark:text-gray-200"><%= product.name.charAt(0) %></span>
                                 <% } %>
                             </div>
                             
                             <!-- Product Info -->
-                            <div class="p-3 sm:p-4 bg-<%= product.panelcolor || 'white' %>">
-                                <h3 class="font-semibold text-sm sm:text-lg mb-1 text-<%= product.textcolor || 'black' %> truncate"><%= product.name %></h3>
+<div class="p-3 sm:p-4 bg-blue-50 dark:bg-#FFFFF0 text-black dark:text-white border-t border-blue-100 dark:border-zinc-700">
+                                <h3 class="font-semibold text-sm sm:text-lg mb-1 truncate"><%= product.name %></h3>
                                 <p class="text-xs sm:text-sm text-gray-600 mb-2">Category: <%= product.category || 'N/A' %></p>
                                 <div class="flex justify-between items-center mb-3">
                                     <span class="text-sm sm:text-lg font-bold text-green-600">₹<%= product.price %></span>
@@ -106,12 +122,13 @@
                 <!-- Orders List -->
                 <div class="space-y-4">
                     <% orders.forEach(function(order, index) { %>
-                        <div class="border rounded-lg p-4 sm:p-6 bg-white shadow-sm hover:shadow-md transition-shadow order-item" data-status="<%= order.status %>">
+<div class="border rounded-lg p-4 sm:p-6 bg-blue-50 shadow-sm hover:shadow-md transition-shadow order-item" data-status="<%= order.status %>">
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                                 <div>
                                     <h3 class="font-semibold text-sm sm:text-lg">Order #<%= order._id ? order._id.toString().slice(-8) : (index + 1) %></h3>
                                     <p class="text-xs sm:text-sm text-gray-600">Customer: <%= order.customerName || 'N/A' %></p>
                                     <p class="text-xs sm:text-sm text-gray-600">Date: <%= new Date(order.orderDate).toLocaleDateString() %></p>
+                                    <p class="text-xs sm:text-sm text-gray-600">Address: <%= order.address || 'N/A' %></p>
                                 </div>
                                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                     <span class="px-2 py-1 rounded text-xs font-semibold 
@@ -191,7 +208,7 @@
 
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+<div class="bg-blue-50 p-6 rounded-lg max-w-md w-full mx-4">
         <h3 class="text-lg font-bold mb-4">Confirm Delete</h3>
         <p class="text-gray-600 mb-6">Are you sure you want to delete "<span id="productName"></span>"? This action cannot be undone.</p>
         <div class="flex gap-3">

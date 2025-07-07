@@ -25,18 +25,6 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
     trim: true
-  },
-  bgcolor: {
-    type: String,
-    default: 'gray-200'
-  },
-  panelcolor: {
-    type: String,
-    default: 'white'
-  },
-  textcolor: {
-    type: String,
-    default: 'black'
   }
 }, {
   timestamps: true

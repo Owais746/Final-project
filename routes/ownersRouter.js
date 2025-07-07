@@ -28,8 +28,26 @@ if (process.env.NODE_ENV === "development") {
 router.get("/admin", async (req, res) => {
     try {
         const productModel = require("../models/product-model");
+        const userModel = require("../models/user-model");
         const products = await productModel.find().sort({ createdAt: -1 });
-        res.render("admin", { products, orders: [], totalOrders: 0 });
+        const users = await userModel.find({}, { orders: 1, fullname: 1, email: 1 });
+
+        // Flatten all orders from all users, annotate with user details
+        let orders = [];
+        users.forEach(user => {
+(user.orders || []).forEach(order => {
+                orders.push({
+                    ...(order && order._doc ? order._doc : order),
+                    customerName: user.fullname || user.email || 'N/A',
+                    customerEmail: user.email || 'N/A',
+                });
+            });
+        });
+
+        // Sort by date, newest first
+        orders.sort((a,b) => (new Date(b.orderDate || b.createdAt || 0)) - (new Date(a.orderDate || a.createdAt || 0)));
+
+        res.render("admin", { products, orders, totalOrders: orders.length });
     } catch (err) {
         console.error('Admin panel error:', err);
         res.render("admin", { products: [], orders: [], totalOrders: 0 });

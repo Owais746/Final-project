@@ -359,6 +359,7 @@
 .dark input[type="email"],
 .dark input[type="password"],
 .dark input[type="tel"],
+.dark input[type="number"],
 .dark select,
 .dark textarea {
     background-color: #374151 !important;
@@ -370,6 +371,7 @@
 .dark input[type="email"]:focus,
 .dark input[type="password"]:focus,
 .dark input[type="tel"]:focus,
+.dark input[type="number"]:focus,
 .dark select:focus,
 .dark textarea:focus {
     background-color: #4b5563 !important;

@@ -4,13 +4,13 @@
     <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold mb-8">Your Orders</h2>
         
-        <% if (orders && orders.length > 0) { %>
+<% if (orders && orders.length > 0) { %>
             <div class="space-y-6">
-                <% orders.forEach(function(order, index) { %>
-                    <div class="border rounded-lg p-6 bg-white shadow-sm">
+<% orders.forEach(function(order, origIndex) { if (order.status !== 'cancelled') { %>
+                    <div class="border rounded-lg p-6 bg-#FFFFF0 shadow-sm">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
                             <div>
-                                <h3 class="text-xl font-semibold">Order #<%= index + 1 %></h3>
+<h3 class="text-xl font-semibold">Order #<%= origIndex + 1 %></h3>
                                 <p class="text-gray-600">Placed on <%= new Date(order.orderDate).toLocaleDateString() %></p>
                             </div>
                             <div class="text-left md:text-right">
@@ -63,17 +63,17 @@
                         <div class="border-t pt-4 mt-4">
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <% if (order.status === 'pending') { %>
-                                    <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
-                                            onclick="cancelOrder(<%= index %>)">
+<button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                                            onclick="cancelOrder(<%=origIndex%>)">
                                         Cancel Order
                                     </button>
                                 <% } %>
                             </div>
                         </div>
                     </div>
-                <% }) %>
+                <% } }); %>
             </div>
-        <% } else { %>
+<% } else { %>
             <!-- No Orders -->
             <div class="text-center py-20">
                 <div class="max-w-md mx-auto">
@@ -91,7 +91,7 @@
         <!-- Back to Shop -->
         <div class="mt-8 text-center">
             <a href="/shop" 
-               class="inline-block bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+               class="inline-block bg-blue-500 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
                 Continue Shopping
             </a>
         </div>

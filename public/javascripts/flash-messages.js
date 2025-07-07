@@ -129,23 +129,24 @@ function showServerFlashMessages() {
         serverFlashContainer.style.display = 'none';
     }
 
-    // Check for legacy flash messages and convert them
-    const legacyElements = document.querySelectorAll('.bg-green-500, .bg-green-100, .bg-red-500, .bg-red-100, .bg-blue-500, .bg-blue-100, .bg-yellow-500, .bg-yellow-100');
-    legacyElements.forEach(element => {
-        const message = element.textContent.trim();
-        if (message && !element.querySelector('form, button, a')) {
-            let type = 'info';
-            if (element.classList.contains('bg-green-500') || element.classList.contains('bg-green-100')) {
-                type = 'success';
-            } else if (element.classList.contains('bg-red-500') || element.classList.contains('bg-red-100')) {
-                type = 'error';
-            } else if (element.classList.contains('bg-yellow-500') || element.classList.contains('bg-yellow-100')) {
-                type = 'warning';
-            }
-            flashMessage.show(message, type);
-            element.style.display = 'none';
+// Check for legacy flash messages and convert them
+const legacyElements = document.querySelectorAll('.legacy-flash');
+legacyElements.forEach(element => {
+    const message = element.textContent.trim();
+    if (message) {
+        let type = 'info';
+        if (element.classList.contains('bg-green-500') || element.classList.contains('bg-green-100')) {
+            type = 'success';
+        } else if (element.classList.contains('bg-red-500') || element.classList.contains('bg-red-100')) {
+            type = 'error';
+        } else if (element.classList.contains('bg-yellow-500') || element.classList.contains('bg-yellow-100')) {
+            type = 'warning';
         }
-    });
+        flashMessage.show(message, type);
+        element.style.display = 'none'; // Hide ONLY old-style container
+    }
+});
+// END legacy flash block
 }
 
 // Dark theme functionality

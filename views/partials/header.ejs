@@ -109,18 +109,19 @@
         }
     </style>
     <!-- Flash Messages Container -->
-    <div id="server-flash-messages" style="display: none;">
-        <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
-            <div class="server-flash error" data-type="error">
-                <%= error %>
-            </div>
-        <% } %>
-        <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
-            <div class="server-flash success" data-type="success">
-                <%= success %>
-            </div>
-        <% } %>
-    </div>
+        <div id="server-flash-messages" style="display: none;">
+            <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+                <div class="server-flash error" data-type="error">
+                    <%= error %>
+                </div>
+            <% } %>
+            <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+                <div class="server-flash success" data-type="success">
+                    <%= success %>
+                </div>
+            <% } %>
+        </div>
+        <!-- Optional: For backward compatibility, add .legacy-flash class for only true legacy messages elsewhere (do NOT use for modals/buttons) -->
 </head>
 
 <body class="font-['helvetica_now_display']">

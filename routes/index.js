@@ -10,7 +10,11 @@ router.get("/", function (req, res) {
 });
 
 router.get("/shop",isloggedin, async function (req, res) {
-  let products = await productModel.find()
+  let filter = {};
+  if (req.query.category) {
+    filter.category = req.query.category;
+  }
+  let products = await productModel.find(filter)
   let success = req.flash("success");
   let error = req.flash("error");
   res.render("shop", { products, success, error });
@@ -487,6 +491,43 @@ router.get("/account", isloggedin, async function (req, res) {
   }
 });
 
+// Change Password
+router.post("/changepassword", isloggedin, async function (req, res) {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+    if (!currentPassword || !newPassword || newPassword.length < 6) {
+      req.flash("error", "All fields are required and new password must be at least 6 characters.");
+      return res.redirect("/account");
+    }
+    if (newPassword !== confirmPassword) {
+      req.flash("error", "New passwords do not match.");
+      return res.redirect("/account");
+    }
+    const user = await userModel.findOne({ email: req.user.email });
+    if (!user) {
+      req.flash("error", "User not found.");
+      return res.redirect("/account");
+    }
+    // Check current password
+    const bcrypt = require("bcrypt");
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!passwordMatch) {
+      req.flash("error", "Current password is incorrect.");
+      return res.redirect("/account");
+    }
+    // Hash and set new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+    req.flash("success", "Password changed successfully.");
+    res.redirect("/account");
+  } catch (err) {
+    console.error('Change password error:', err);
+    req.flash("error", "Something went wrong while changing password");
+    res.redirect("/account");
+  }
+});
+
 // Update profile
 router.post("/updateprofile", isloggedin, async function (req, res) {
   try {
@@ -534,7 +575,7 @@ router.post("/clearflash", function (req, res) {
   res.json({ success: true });
 });
 
-// Cancel order
+// Cancel/Delete order (removes the order entirely)
 router.post("/cancelorder/:orderindex", isloggedin, async function (req, res) {
   try {
     let user = await userModel.findOne({ email: req.user.email });
@@ -547,20 +588,18 @@ router.post("/cancelorder/:orderindex", isloggedin, async function (req, res) {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    const order = user.orders[orderIndex];
-    if (order.status !== 'pending') {
-      return res.status(400).json({ error: "Only pending orders can be cancelled" });
-    }
-
-    // Update order status to cancelled
-    order.status = 'cancelled';
-    order.cancelledDate = new Date();
-    
+    user.orders.splice(orderIndex, 1);
     await user.save();
-    res.json({ success: true, message: "Order cancelled successfully" });
+
+    req.flash('success', 'Order deleted successfully!');
+    if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
+      res.json({ success: true, message: "Order deleted successfully" });
+    } else {
+      res.redirect('/orders');
+    }
   } catch (err) {
     console.error('Cancel order error:', err);
-    res.status(500).json({ error: "Something went wrong while cancelling order" });
+    res.status(500).json({ error: "Something went wrong while deleting order" });
   }
 });
 
