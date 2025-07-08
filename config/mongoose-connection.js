@@ -13,3 +13,4 @@ mongoose.connect(`${config.get("MONGODB_URI")}/FinalProject`)
 });
 
 module.exports = mongoose.connection;
+
