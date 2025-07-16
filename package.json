@@ -1,10 +1,10 @@
 {
   "name": "final-project",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "api/app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "node api/app.js",
+    "dev": "nodemon api/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
