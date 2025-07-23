@@ -6,7 +6,7 @@ const productModel = require("../models/product-model")
 // Create product
 router.post("/create", upload.single("image"), async (req, res) => {
   try{
-    let {name, price, discount, category, bgcolor, panelcolor, textcolor} = req.body;
+    let {name, price, discount, category,} = req.body;
 
     // Validation
     if (!name || name.trim().length < 2) {

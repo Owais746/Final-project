@@ -3,23 +3,21 @@ const router = express.Router();
 const isloggedin = require("../middleware/islogedin");
 const productModel = require("../models/product-model");
 const userModel = require("../models/user-model");
-
 router.get("/", function (req, res) {
   let error = req.flash("error");
-  res.render("index", { error, loggedin: false });
+  res.render("index", {error , loggedin : false });
 });
 
-router.get("/shop", isloggedin, async function (req, res) {
+router.get("/shop",isloggedin, async function (req, res) {
   let filter = {};
   if (req.query.category) {
     filter.category = req.query.category;
   }
-  let products = await productModel.find(filter);
+  let products = await productModel.find(filter)
   let success = req.flash("success");
   let error = req.flash("error");
   res.render("shop", { products, success, error });
 });
-
 router.get("/addtocart/:productid", isloggedin, async function (req, res) {
   try {
     console.log('Add to cart request received for product:', req.params.productid);
@@ -218,7 +216,7 @@ router.get("/removefromcart/:productid", isloggedin, async function (req, res) {
       }
       
       const shouldKeep = itemProductId !== req.params.productid;
-      console.log(`Item ${itemProductId} should keep: ${shouldKeep}`);
+      console.log(Item `${itemProductId} should keep: ${shouldKeep}`);
       return shouldKeep;
     });
     
@@ -604,4 +602,4 @@ router.post("/cancelorder/:orderindex", isloggedin, async function (req, res) {
   }
 });
 
-module.exports = router;
+module.exports = router; 
